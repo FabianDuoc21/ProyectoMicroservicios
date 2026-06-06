@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="Modelo_Fullstack" id="DDE4FBF7-5B9F-45EF-4F1C-52746ECDF96D" version="3.5">
+<createdBy>leand</createdBy>
+<createdTime>2026-05-30 23:57:24 UTC</createdTime>
+<ownerDesignName>Modelo de datos</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>DDE4FBF7-5B9F-45EF-4F1C-52746ECDF96D</designId>
+</OSDM_Design>

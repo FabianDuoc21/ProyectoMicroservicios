@@ -16,7 +16,7 @@
         <module name="evento" />
         <module name="region" />
       </profile>
-      <profile name="Annotation profile for usuario" enabled="true">
+      <profile name="Annotation profile for ms-pago" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -24,8 +24,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="usuario" />
-        <module name="ms-pedido" />
         <module name="ms-pago" />
+        <module name="ms-pedido" />
       </profile>
     </annotationProcessing>
   </component>

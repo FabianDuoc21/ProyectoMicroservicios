@@ -1,5 +1,15 @@
 services:
 
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "8090:8090"
+    depends_on:
+      - ms-region
+      - ms-comuna
+      - ms-usuario
+
   ms-region:
     build: ./region
     container_name: ms-region

@@ -13,14 +13,20 @@ spring:
           uri: http://localhost:8084
           predicates:
             - Path=/api/regiones/**
+          filters:
+            - StripPrefix=0
         - id: ms-comuna
           uri: http://localhost:8085
           predicates:
             - Path=/api/comunas/**
+          filters:
+            - StripPrefix=0
         - id: ms-usuario
           uri: http://localhost:8086
           predicates:
             - Path=/api/usuarios/**
+          filters:
+            - StripPrefix=0
         - id: ms-evento
           uri: http://localhost:8087
           predicates:

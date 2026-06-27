@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ProyectoMicroservicios-mai2.iml" filepath="$PROJECT_DIR$/.idea/ProyectoMicroservicios-mai2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-cliente/ms-cliente/ms-cliente.iml" filepath="$PROJECT_DIR$/ms-cliente/ms-cliente/ms-cliente.iml" />
     </modules>
   </component>
 </project>

@@ -1,24 +1,27 @@
 package com.example.comuna.webclient;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 public class RegionClient {
 
-    private final RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    public RegionClient() {
-        this.restTemplate = new RestTemplate();
-    }
+    @Value("${region.service.url}")
+    private String regionServiceUrl;
 
-    public Boolean existeRegion(Long regionId) {
+    public boolean existeRegion(Integer idRegion) {
         try {
-            restTemplate.getForObject(
-                    "http://localhost:8084/api/regiones/" + regionId,
+            ResponseEntity<Object> response = restTemplate.getForEntity(
+                    regionServiceUrl + "/api/regiones/" + idRegion,
                     Object.class
             );
-            return true;
+
+            return response.getStatusCode().is2xxSuccessful();
+
         } catch (Exception e) {
             return false;
         }

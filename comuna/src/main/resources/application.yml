@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: ms-comuna
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_ecommerce
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8085
+
+region:
+  service:
+    url: http://localhost:8084
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

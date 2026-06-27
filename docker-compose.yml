@@ -1,0 +1,21 @@
+services:
+
+  ms-region:
+    build: ./region
+    container_name: ms-region
+    ports:
+      - "8084:8084"
+
+  ms-comuna:
+    build: ./comuna
+    container_name: ms-comuna
+    ports:
+      - "8085:8085"
+    depends_on:
+      - ms-region
+
+  ms-usuario:
+    build: ./usuario
+    container_name: ms-usuario
+    ports:
+      - "8086:8086"

@@ -3,7 +3,7 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Annotation profile for ms-pedido" enabled="true">
+      <profile name="Annotation profile for ms-cliente" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -13,10 +13,15 @@
         <module name="ms-cliente" />
         <module name="evento" />
         <module name="ms-pedido" />
-        <module name="ms-pago" />
         <module name="comuna" />
         <module name="usuario" />
         <module name="region" />
+      </profile>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ms-pago" />
       </profile>
     </annotationProcessing>
   </component>

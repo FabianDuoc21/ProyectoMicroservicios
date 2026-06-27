@@ -3,6 +3,8 @@ package com.example.evento.controller;
 import com.example.evento.dto.EventoDTO;
 import com.example.evento.model.Evento;
 import com.example.evento.service.EventoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/eventos")
+@Tag(name= "Eventos", description = "Operaciones relacionadas con los eventos")
 public class EventoController {
 
     private final EventoService eventoService;
@@ -21,11 +24,13 @@ public class EventoController {
     }
 
     @GetMapping
+    @Operation(summary = "Obtener todos los eventos", description = "Obtiene una lista de todos los eventos")
     public List<Evento> getAllEventos() {
         return eventoService.getAllEventos();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener evento por código", description = "Obtiene cada evento ingresado por código")
     public ResponseEntity<Evento> getEventoById(@PathVariable Integer id) {
         Optional<Evento> evento = eventoService.getEventoById(id);
 
@@ -34,6 +39,7 @@ public class EventoController {
     }
 
     @PostMapping
+    @Operation(summary = "Crear evento",description = "Obtiene cada evento nuevo")
     public ResponseEntity<Evento> createEvento(@Valid @RequestBody EventoDTO dto) {
 
         Evento evento = new Evento(
@@ -50,6 +56,7 @@ public class EventoController {
     }
 
     @PutMapping("/{id}")
+    @Operation (summary = "Actualizar eventos", description = "Obtiene eventos actualizados")
     public ResponseEntity<Evento> updateEvento(
             @PathVariable Integer id,
             @Valid @RequestBody EventoDTO dto) {
@@ -68,6 +75,7 @@ public class EventoController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar evento", description = "Elimina eventos")
     public ResponseEntity<Void> deleteEvento(@PathVariable Integer id) {
         eventoService.deleteEvento(id);
         return ResponseEntity.noContent().build();

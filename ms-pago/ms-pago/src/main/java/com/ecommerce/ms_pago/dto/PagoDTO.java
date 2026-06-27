@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-//agregado
 @Data
 public class PagoDTO {
 

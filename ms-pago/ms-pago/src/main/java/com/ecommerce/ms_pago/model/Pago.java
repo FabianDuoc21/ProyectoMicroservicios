@@ -3,13 +3,17 @@ package com.ecommerce.ms_pago.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "pagos")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pago {
 
     @Id

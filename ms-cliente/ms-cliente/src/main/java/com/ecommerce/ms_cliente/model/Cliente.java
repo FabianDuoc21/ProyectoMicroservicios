@@ -16,7 +16,7 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idCliente;
+    private Long idCliente;
 
     @Column(nullable = false)
     @NotBlank(message = "El nombre es obligatorio")

@@ -1,4 +1,4 @@
-package com.ecommerce.ms_cliente.dto;
+package com.ecommerce.ms_cliente.DTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class ClienteDTO {
-
     @NotBlank(message = "El nombre es obligatorio")
     private String nombreCliente;
 

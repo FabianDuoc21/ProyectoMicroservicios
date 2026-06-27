@@ -4,6 +4,10 @@ import com.ecommerce.ms_pedido.dto.PedidoDTO;
 import com.ecommerce.ms_pedido.model.Pedido;
 import com.ecommerce.ms_pedido.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +72,13 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar pedido", description = "Actualiza pedidos")
+    @Operation(summary = "Actualizar un pedido", description = "Actualiza un pedido existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido actualizado correctamente",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = PedidoDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Carrera no encontrada")
+    })
     public ResponseEntity<Pedido> actualizarPedido(
             @PathVariable Long id,
             @Valid @RequestBody PedidoDTO dto) {

@@ -1,0 +1,39 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: ms-region
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/regiones/**
+        - id: ms-comuna
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/comunas/**
+        - id: ms-usuario
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/usuarios/**
+        - id: ms-evento
+          uri: http://localhost:8087
+          predicates:
+            - Path=/api/eventos/**
+        - id: ms-cliente
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/v1/clientes/**
+        - id: ms-pedido
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/pedidos/**
+        - id: ms-pago
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/pagos/**

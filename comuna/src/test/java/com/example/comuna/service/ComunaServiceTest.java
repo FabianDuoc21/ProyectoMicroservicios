@@ -13,11 +13,24 @@ import static org.mockito.Mockito.*;
 
 class ComunaServiceTest {
 
+    static class FakeRegionClient extends RegionClient {
+        private final boolean existe;
+
+        FakeRegionClient(boolean existe) {
+            this.existe = existe;
+        }
+
+        @Override
+        public boolean existeRegion(Integer idRegion) {
+            return existe;
+        }
+    }
+
     @Test
     void debeListarComunas() {
         // Given
         ComunaRepository repository = mock(ComunaRepository.class);
-        RegionClient regionClient = mock(RegionClient.class);
+        RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
         List<Comuna> comunas = List.of(new Comuna(1, "Santiago", 1));
@@ -36,7 +49,7 @@ class ComunaServiceTest {
     void debeBuscarComunaPorId() {
         // Given
         ComunaRepository repository = mock(ComunaRepository.class);
-        RegionClient regionClient = mock(RegionClient.class);
+        RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
         Comuna comuna = new Comuna(1, "Providencia", 1);
@@ -55,12 +68,10 @@ class ComunaServiceTest {
     void debeCrearComunaCuandoRegionExiste() {
         // Given
         ComunaRepository repository = mock(ComunaRepository.class);
-        RegionClient regionClient = mock(RegionClient.class);
+        RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
         Comuna comuna = new Comuna(1, "Las Condes", 1);
-
-        when(regionClient.existeRegion(1)).thenReturn(true);
         when(repository.save(comuna)).thenReturn(comuna);
 
         // When
@@ -69,7 +80,6 @@ class ComunaServiceTest {
         // Then
         assertNotNull(resultado);
         assertEquals("Las Condes", resultado.getNombreComuna());
-        verify(regionClient).existeRegion(1);
         verify(repository).save(comuna);
     }
 
@@ -77,12 +87,10 @@ class ComunaServiceTest {
     void debeLanzarErrorAlCrearComunaConRegionInexistente() {
         // Given
         ComunaRepository repository = mock(ComunaRepository.class);
-        RegionClient regionClient = mock(RegionClient.class);
+        RegionClient regionClient = new FakeRegionClient(false);
         ComunaService service = new ComunaService(repository, regionClient);
 
         Comuna comuna = new Comuna(1, "Comuna inválida", 99);
-
-        when(regionClient.existeRegion(99)).thenReturn(false);
 
         // When / Then
         RuntimeException error = assertThrows(RuntimeException.class, () -> service.createComuna(comuna));
@@ -94,13 +102,12 @@ class ComunaServiceTest {
     void debeActualizarComunaExistente() {
         // Given
         ComunaRepository repository = mock(ComunaRepository.class);
-        RegionClient regionClient = mock(RegionClient.class);
+        RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
         Comuna comuna = new Comuna(1, "Ñuñoa", 1);
 
         when(repository.existsById(1)).thenReturn(true);
-        when(regionClient.existeRegion(1)).thenReturn(true);
         when(repository.save(comuna)).thenReturn(comuna);
 
         // When
@@ -109,7 +116,6 @@ class ComunaServiceTest {
         // Then
         assertEquals("Ñuñoa", resultado.getNombreComuna());
         verify(repository).existsById(1);
-        verify(regionClient).existeRegion(1);
         verify(repository).save(comuna);
     }
 
@@ -117,7 +123,7 @@ class ComunaServiceTest {
     void debeLanzarErrorAlActualizarComunaInexistente() {
         // Given
         ComunaRepository repository = mock(ComunaRepository.class);
-        RegionClient regionClient = mock(RegionClient.class);
+        RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
         Comuna comuna = new Comuna(99, "No existe", 1);

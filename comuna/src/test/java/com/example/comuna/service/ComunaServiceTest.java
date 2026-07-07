@@ -1,5 +1,7 @@
 package com.example.comuna.service;
 
+import com.example.comuna.dto.ComunaDTO;
+import com.example.comuna.exception.ApiException;
 import com.example.comuna.model.Comuna;
 import com.example.comuna.repository.ComunaRepository;
 import com.example.comuna.webclient.RegionClient;
@@ -28,26 +30,20 @@ class ComunaServiceTest {
 
     @Test
     void debeListarComunas() {
-        // Given
         ComunaRepository repository = mock(ComunaRepository.class);
         RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
-        List<Comuna> comunas = List.of(new Comuna(1, "Santiago", 1));
-        when(repository.findAll()).thenReturn(comunas);
+        when(repository.findAll()).thenReturn(List.of(new Comuna(1, "Santiago", 1)));
 
-        // When
-        List<Comuna> resultado = service.getAllComunas();
+        List<Comuna> resultado = service.listar();
 
-        // Then
         assertEquals(1, resultado.size());
         assertEquals("Santiago", resultado.get(0).getNombreComuna());
-        verify(repository).findAll();
     }
 
     @Test
     void debeBuscarComunaPorId() {
-        // Given
         ComunaRepository repository = mock(ComunaRepository.class);
         RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
@@ -55,84 +51,135 @@ class ComunaServiceTest {
         Comuna comuna = new Comuna(1, "Providencia", 1);
         when(repository.findById(1)).thenReturn(Optional.of(comuna));
 
-        // When
-        Optional<Comuna> resultado = service.getComunaById(1);
+        Comuna resultado = service.buscar(1);
 
-        // Then
-        assertTrue(resultado.isPresent());
-        assertEquals("Providencia", resultado.get().getNombreComuna());
-        verify(repository).findById(1);
+        assertEquals("Providencia", resultado.getNombreComuna());
     }
 
     @Test
-    void debeCrearComunaCuandoRegionExiste() {
-        // Given
+    void debeLanzarErrorSiComunaNoExiste() {
         ComunaRepository repository = mock(ComunaRepository.class);
         RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
+        when(repository.findById(99)).thenReturn(Optional.empty());
+
+        ApiException error = assertThrows(ApiException.class, () -> service.buscar(99));
+
+        assertEquals("La comuna no existe", error.getMessage());
+    }
+
+    @Test
+    void debeCrearComunaCuandoRegionExiste() {
+        ComunaRepository repository = mock(ComunaRepository.class);
+        RegionClient regionClient = new FakeRegionClient(true);
+        ComunaService service = new ComunaService(repository, regionClient);
+
+        ComunaDTO dto = new ComunaDTO();
+        dto.setIdComuna(1);
+        dto.setNombreComuna("Las Condes");
+        dto.setIdRegion(1);
+
         Comuna comuna = new Comuna(1, "Las Condes", 1);
-        when(repository.save(comuna)).thenReturn(comuna);
 
-        // When
-        Comuna resultado = service.createComuna(comuna);
+        when(repository.existsById(1)).thenReturn(false);
+        when(repository.save(any(Comuna.class))).thenReturn(comuna);
 
-        // Then
+        Comuna resultado = service.guardar(dto);
+
         assertNotNull(resultado);
         assertEquals("Las Condes", resultado.getNombreComuna());
-        verify(repository).save(comuna);
+    }
+
+    @Test
+    void debeLanzarErrorAlCrearComunaConIdRepetido() {
+        ComunaRepository repository = mock(ComunaRepository.class);
+        RegionClient regionClient = new FakeRegionClient(true);
+        ComunaService service = new ComunaService(repository, regionClient);
+
+        ComunaDTO dto = new ComunaDTO();
+        dto.setIdComuna(1);
+        dto.setNombreComuna("Las Condes");
+        dto.setIdRegion(1);
+
+        when(repository.existsById(1)).thenReturn(true);
+
+        ApiException error = assertThrows(ApiException.class, () -> service.guardar(dto));
+
+        assertEquals("Ya existe una comuna con ese ID", error.getMessage());
+        verify(repository, never()).save(any(Comuna.class));
     }
 
     @Test
     void debeLanzarErrorAlCrearComunaConRegionInexistente() {
-        // Given
         ComunaRepository repository = mock(ComunaRepository.class);
         RegionClient regionClient = new FakeRegionClient(false);
         ComunaService service = new ComunaService(repository, regionClient);
 
-        Comuna comuna = new Comuna(1, "Comuna inválida", 99);
+        ComunaDTO dto = new ComunaDTO();
+        dto.setIdComuna(2);
+        dto.setNombreComuna("Comuna inválida");
+        dto.setIdRegion(99);
 
-        // When / Then
-        RuntimeException error = assertThrows(RuntimeException.class, () -> service.createComuna(comuna));
-        assertEquals("La región asociada no existe", error.getMessage());
-        verify(repository, never()).save(comuna);
+        when(repository.existsById(2)).thenReturn(false);
+
+        ApiException error = assertThrows(ApiException.class, () -> service.guardar(dto));
+
+        assertEquals("La región indicada no existe", error.getMessage());
+        verify(repository, never()).save(any(Comuna.class));
     }
 
     @Test
     void debeActualizarComunaExistente() {
-        // Given
         ComunaRepository repository = mock(ComunaRepository.class);
         RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
         Comuna comuna = new Comuna(1, "Ñuñoa", 1);
 
-        when(repository.existsById(1)).thenReturn(true);
-        when(repository.save(comuna)).thenReturn(comuna);
+        ComunaDTO dto = new ComunaDTO();
+        dto.setIdComuna(1);
+        dto.setNombreComuna("Providencia");
+        dto.setIdRegion(1);
 
-        // When
-        Comuna resultado = service.updateComuna(comuna);
+        when(repository.findById(1)).thenReturn(Optional.of(comuna));
+        when(repository.save(any(Comuna.class))).thenReturn(comuna);
 
-        // Then
-        assertEquals("Ñuñoa", resultado.getNombreComuna());
-        verify(repository).existsById(1);
-        verify(repository).save(comuna);
+        Comuna resultado = service.actualizar(1, dto);
+
+        assertEquals("Providencia", resultado.getNombreComuna());
     }
 
     @Test
     void debeLanzarErrorAlActualizarComunaInexistente() {
-        // Given
         ComunaRepository repository = mock(ComunaRepository.class);
         RegionClient regionClient = new FakeRegionClient(true);
         ComunaService service = new ComunaService(repository, regionClient);
 
-        Comuna comuna = new Comuna(99, "No existe", 1);
+        ComunaDTO dto = new ComunaDTO();
+        dto.setIdComuna(99);
+        dto.setNombreComuna("No existe");
+        dto.setIdRegion(1);
 
-        when(repository.existsById(99)).thenReturn(false);
+        when(repository.findById(99)).thenReturn(Optional.empty());
 
-        // When / Then
-        RuntimeException error = assertThrows(RuntimeException.class, () -> service.updateComuna(comuna));
+        ApiException error = assertThrows(ApiException.class, () -> service.actualizar(99, dto));
+
         assertEquals("Comuna no encontrada", error.getMessage());
-        verify(repository, never()).save(comuna);
+    }
+
+    @Test
+    void debeEliminarComunaExistente() {
+        ComunaRepository repository = mock(ComunaRepository.class);
+        RegionClient regionClient = new FakeRegionClient(true);
+        ComunaService service = new ComunaService(repository, regionClient);
+
+        Comuna comuna = new Comuna(1, "Santiago", 1);
+
+        when(repository.findById(1)).thenReturn(Optional.of(comuna));
+
+        service.eliminar(1);
+
+        verify(repository).delete(comuna);
     }
 }

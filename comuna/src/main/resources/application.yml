@@ -17,7 +17,7 @@ server:
 
 region:
   service:
-    url: http://ms-region:8084
+    url: http://localhost:8084
 
 springdoc:
   api-docs:

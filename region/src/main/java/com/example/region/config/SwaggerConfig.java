@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI regionOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API Microservicio Región")
+                        .title("Microservicio Región")
                         .version("1.0")
-                        .description("Documentación de endpoints para gestión de regiones"));
+                        .description("API REST para la gestión de regiones"));
     }
 }

@@ -1,44 +1,84 @@
 package com.example.region.service;
 
+import com.example.region.dto.RegionDTO;
+import com.example.region.exception.ApiException;
 import com.example.region.model.Region;
 import com.example.region.repository.RegionRepository;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RegionService {
 
-    private final RegionRepository regionRepository;
+    private static final Logger logger = LoggerFactory.getLogger(RegionService.class);
 
-    public RegionService(RegionRepository regionRepository) {
-        this.regionRepository = regionRepository;
+    private final RegionRepository repository;
+
+    public List<Region> listar(){
+
+        logger.info("Obteniendo listado de regiones");
+
+        return repository.findAll();
+
     }
 
-    public List<Region> getAllRegiones() {
-        return regionRepository.findAll();
+    public Region buscar(Integer id){
+
+        logger.info("Buscando región {}", id);
+
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new ApiException("La región no existe"));
     }
 
-    public Optional<Region> getRegionById(Integer id) {
-        return regionRepository.findById(id);
-    }
+    public Region guardar(RegionDTO dto){
 
-    public Region createRegion(Region region) {
-        return regionRepository.save(region);
-    }
+        logger.info("Guardando región");
 
-    public Region updateRegion(Region region) {
-        if (!regionRepository.existsById(region.getIdRegion())) {
-            throw new RuntimeException("Región no encontrada");
+        if(repository.existsById(dto.getIdRegion())){
+
+            throw new ApiException("Ya existe una región con ese ID");
+
         }
-        return regionRepository.save(region);
+
+        Region region=new Region();
+
+        region.setIdRegion(dto.getIdRegion());
+        region.setNombreRegion(dto.getNombreRegion());
+
+        return repository.save(region);
+
     }
 
-    public void deleteRegion(Integer id) {
-        if (!regionRepository.existsById(id)) {
-            throw new RuntimeException("Región no encontrada");
-        }
-        regionRepository.deleteById(id);
+    public Region actualizar(Integer id,RegionDTO dto){
+
+        Region region=repository.findById(id)
+                .orElseThrow(() ->
+                        new ApiException("Región no encontrada"));
+
+        region.setNombreRegion(dto.getNombreRegion());
+
+        logger.info("Actualizando región {}",id);
+
+        return repository.save(region);
+
     }
+
+    public void eliminar(Integer id){
+
+        Region region=repository.findById(id)
+                .orElseThrow(() ->
+                        new ApiException("Región no encontrada"));
+
+        repository.delete(region);
+
+        logger.info("Región eliminada");
+
+    }
+
 }

@@ -3,67 +3,78 @@ package com.example.region.controller;
 import com.example.region.dto.RegionDTO;
 import com.example.region.model.Region;
 import com.example.region.service.RegionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/regiones")
+@RequiredArgsConstructor
+@Tag(name = "Regiones")
 public class RegionController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegionController.class);
 
     private final RegionService regionService;
 
-    public RegionController(RegionService regionService) {
-        this.regionService = regionService;
-    }
-
+    @Operation(summary = "Obtiene todas las regiones")
     @GetMapping
-    public List<Region> getAllRegiones() {
-        return regionService.getAllRegiones();
+    public ResponseEntity<List<Region>> listar() {
+
+        logger.info("Listando regiones");
+
+        return ResponseEntity.ok(regionService.listar());
     }
 
+    @Operation(summary = "Obtiene una región por id")
     @GetMapping("/{id}")
-    public ResponseEntity<Region> getRegionById(@PathVariable Integer id) {
-        Optional<Region> region = regionService.getRegionById(id);
+    public ResponseEntity<Region> buscar(@PathVariable Integer id){
 
-        return region.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        logger.info("Buscando región {}", id);
+
+        return ResponseEntity.ok(regionService.buscar(id));
     }
 
+    @Operation(summary = "Crear región")
     @PostMapping
-    public ResponseEntity<Region> createRegion(@Valid @RequestBody RegionDTO dto) {
+    public ResponseEntity<Region> guardar(@Valid @RequestBody RegionDTO dto){
 
-        Region region = new Region(
-                dto.getIdRegion(),
-                dto.getNombreRegion()
-        );
+        logger.info("Creando región {}", dto.getNombreRegion());
 
-        return ResponseEntity.ok(
-                regionService.createRegion(region)
-        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(regionService.guardar(dto));
     }
 
+    @Operation(summary = "Actualizar región")
     @PutMapping("/{id}")
-    public ResponseEntity<Region> updateRegion(
+    public ResponseEntity<Region> actualizar(
             @PathVariable Integer id,
-            @Valid @RequestBody RegionDTO dto) {
+            @Valid @RequestBody RegionDTO dto){
 
-        Region region = new Region(
-                id,
-                dto.getNombreRegion()
-        );
+        logger.info("Actualizando región {}", id);
 
-        return ResponseEntity.ok(
-                regionService.updateRegion(region)
-        );
+        return ResponseEntity.ok(regionService.actualizar(id,dto));
+
     }
 
+    @Operation(summary = "Eliminar región")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRegion(@PathVariable Integer id) {
-        regionService.deleteRegion(id);
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id){
+
+        logger.info("Eliminando región {}", id);
+
+        regionService.eliminar(id);
+
         return ResponseEntity.noContent().build();
+
     }
+
 }

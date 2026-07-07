@@ -9,11 +9,12 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI comunaOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API Microservicio Comuna")
+                        .title("Microservicio Comuna")
                         .version("1.0")
-                        .description("Documentación de endpoints para gestión de comunas"));
+                        .description("API de Comunas"));
     }
+
 }

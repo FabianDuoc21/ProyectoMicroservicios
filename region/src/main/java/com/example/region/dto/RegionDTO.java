@@ -2,18 +2,16 @@ package com.example.region.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class RegionDTO {
 
-    @NotNull(message = "El ID es obligatorio")
+    @NotNull(message = "El ID de la región es obligatorio")
     private Integer idRegion;
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank(message = "El nombre de la región es obligatorio")
+    @Size(min = 3, max = 80, message = "El nombre de la región debe tener entre 3 y 80 caracteres")
     private String nombreRegion;
 }
